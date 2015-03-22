@@ -1,0 +1,19 @@
+{
+	"places": [
+		{
+			"Name": "Atlanta", 
+			"Lat": 33.7550, 
+			"Lng": -84.3900
+		},
+		{
+			"Name": "Philadelphia", 
+			"Lat": 39.9500, 
+			"Lng": -75.1667
+		},
+		{
+			"Name": "Mobile", 
+			"Lat": 30.6944, 
+			"Lng": -88.0431
+		}
+	]
+}
