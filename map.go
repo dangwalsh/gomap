@@ -19,23 +19,6 @@ type Locations struct {
 	Places []Place
 }
 
-func loadPlace(name string) (*Place, error) {
-	filename := name + ".json"
-	data, err := ioutil.ReadFile(filename)
-	if err != nil {
-		fmt.Print("Error:", err)
-		return nil, err
-	}
-	var place Place
-	err = json.Unmarshal(data, &place)
-	if err != nil {
-		fmt.Print("Error:", err)
-		return nil, err
-	}
-	fmt.Printf("%#v\n", place)
-	return &place, nil
-}
-
 func loadLocation(name string) (*Place, error) {
 	data, err := ioutil.ReadFile("cities.json")
 	if err != nil {
