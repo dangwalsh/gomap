@@ -10,9 +10,12 @@ import (
 )
 
 type Place struct {
-	Name string
-	Lat  float64
-	Lng  float64
+	Zip          string
+	Abbreviation string
+	Latitude     float64
+	Longitude    float64
+	City         string
+	State        string
 }
 
 type Locations struct {
@@ -20,17 +23,19 @@ type Locations struct {
 }
 
 func loadLocation(name string) (*Place, error) {
-	data, err := ioutil.ReadFile("cities.json")
+	data, err := ioutil.ReadFile("zips.json")
 	if err != nil {
+		fmt.Print("Error:", err)
 		return nil, err
 	}
 	var cities Locations
 	err = json.Unmarshal(data, &cities)
 	if err != nil {
+		fmt.Print("Error:", err)
 		return nil, err
 	}
 	for _, elem := range cities.Places {
-		if strings.EqualFold(elem.Name, name) {
+		if strings.EqualFold(elem.Zip, name) {
 			fmt.Printf("%#v\n", elem)
 			return &elem, nil
 		}
@@ -43,7 +48,7 @@ func mapHandler(w http.ResponseWriter, r *http.Request) {
 	p, err := loadLocation(name)
 	if err != nil {
 		fmt.Print("Error:", err)
-		p = &Place{Name: name}
+		p = &Place{Zip: name}
 	}
 	t, _ := template.ParseFiles("map.html")
 	t.Execute(w, p)
