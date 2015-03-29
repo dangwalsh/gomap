@@ -15,6 +15,19 @@
     }
   </style>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDAZFmLK4QVdEpz83NkdKDQKm_vtueVivs"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $("#output").append("Waiting for system time..");
+      setInterval(delayedPost, 1000);
+    });
+
+    function delayedPost() {
+      $.post("https://go-dangwalsh-1.c9.io/gettime", "", function(data, status) {
+        $("#output").empty().append(data);
+      });
+    }
+  </script>
   <script>
     var map;
     var marker;
@@ -23,7 +36,7 @@
 
     function initialize() {
       var myLatlng = new google.maps.LatLng({{.Latitude}}, {{.Longitude}});
-      
+
       var mapOptions = {
         zoom: 8,
         center: myLatlng
@@ -37,19 +50,19 @@
         draggable: false,
         animation: google.maps.Animation.DROP
       });
-      
+
       var polyOptions = {
         strokeColor: '#000000',
         strokeOpacity: 1.0,
         strokeWeight: 3,
         draggable: true
       };
-      
+
       poly = new google.maps.Polyline(polyOptions);
       poly.setMap(map);
-      
+
       google.maps.event.addListener(map, 'click', showLocation);
-      
+
       infoWindow = new google.maps.InfoWindow();
     }
 
@@ -61,20 +74,20 @@
         marker.setAnimation(google.maps.Animation.BOUNCE);
       }
     }
-    
+
     function addLatLng(event) {
       var path = poly.getPath();
       path.push(event.latLng);
     }
-    
+
     function showLocation(event) {
       var contentString = '<b>{{.City}} locale</b><br>' +
-      'Clicked location: <br>' + event.latLng.lat() + ',' + event.latLng.lng() +
-      '<br>';
-      
+        'Clicked location: <br>' + event.latLng.lat() + ',' + event.latLng.lng() +
+        '<br>';
+
       infoWindow.setContent(contentString);
       infoWindow.setPosition(event.latLng);
-      
+
       infoWindow.open(map);
     }
 
@@ -83,6 +96,7 @@
 </head>
 
 <body>
+  <div id="output"></div>
   <div id="map-canvas"></div>
 </body>
 

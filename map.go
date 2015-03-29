@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"time"
 )
 
 type Place struct {
@@ -43,6 +44,8 @@ func loadLocation(name string) (*Place, error) {
 	return nil, nil
 }
 
+var templates = template.Must(template.ParseFiles("map.html"))
+
 func mapHandler(w http.ResponseWriter, r *http.Request) {
 	name := r.URL.Path[len("/map/"):]
 	p, err := loadLocation(name)
@@ -50,11 +53,18 @@ func mapHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Print("Error:", err)
 		p = &Place{Zip: name}
 	}
-	t, _ := template.ParseFiles("map.html")
-	t.Execute(w, p)
+	err = templates.ExecuteTemplate(w, "map.html", p) 
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func timeHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprint(w, time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST"))
 }
 
 func main() {
 	http.HandleFunc("/map/", mapHandler)
+	http.HandleFunc("/gettime", timeHandler)
 	http.ListenAndServe(":8080", nil)
 }
